@@ -6,12 +6,14 @@ class AddWorkout extends Component {
     super(props);
     this.state = {
       exercises: [],
+      name: "",
       nextID: 0
     };
   }
-  returnData = set => {
+  returnData = (set, name) => {
     this.setState({
       exercises: set,
+      name: name,
       nextID: set[set.length - 1] ? set[set.length - 1].id + 1 : 0
     });
   };

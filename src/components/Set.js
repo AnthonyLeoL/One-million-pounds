@@ -22,7 +22,7 @@ const Set = props => {
       <TextInput
         autoCapitalize="words"
         autoCorrect
-        placeholder={props.weight ? props.weight.toString() : "Add reps"}
+        placeholder={props.weight ? props.weight.toString() : "Add weight"}
         onChangeText={val => props.onChange(val, "weight")}
         value={props.weight ? props.weight.toString() : ""}
       />
