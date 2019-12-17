@@ -18,7 +18,7 @@ const Set = props => {
         onChangeText={val => props.onChange(val, "reps")}
         value={props.reps ? props.reps.toString() : ""}
       />
-      <Text>weights:</Text>
+      <Text>weight:</Text>
       <TextInput
         autoCapitalize="words"
         autoCorrect

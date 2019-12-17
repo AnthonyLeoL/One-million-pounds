@@ -17,15 +17,23 @@ class AddExercise extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sets: [],
-      id: 0
+      name: "",
+      sets: this.props.navigation.state.params.currentData.exercises,
+      id: this.props.navigation.state.params.currentData.nextID
     };
   }
 
   changeValue = (item, newVal, type) => {
     let arr = this.state.sets;
-    arr[item.id][`${type}`] = newVal;
+    let index = arr.findIndex(el => {
+      return el.id === item.id;
+    });
+    arr[index][`${type}`] = newVal;
+    if (!arr[index].reps && !arr[index].weight && this.state.sets.length) {
+      arr.splice(index, 1);
+    }
     this.setState({ sets: arr });
+    this.props.navigation.state.params.returnData(this.state.sets);
   };
 
   render() {
@@ -33,18 +41,27 @@ class AddExercise extends Component {
       <View>
         <View>
           <Text>Name</Text>
-          <TextInput placeholder="name" />
+          <TextInput
+            placeholder="name"
+            value={this.name}
+            onChangeText={val => {
+              this.setState({ name: val });
+            }}
+          />
         </View>
         <View>
           <FlatList
             data={this.state.sets}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
-                <Set
-                  reps={item.reps}
-                  weight={item.weight}
-                  onChange={(val, type) => this.changeValue(item, val, type)}
-                />
+                <View>
+                  <Text>Set {index + 1} </Text>
+                  <Set
+                    reps={item.reps}
+                    weight={item.weight}
+                    onChange={(val, type) => this.changeValue(item, val, type)}
+                  />
+                </View>
               );
             }}
             keyExtractor={item => item.id.toString()}
