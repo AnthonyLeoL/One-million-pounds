@@ -27,6 +27,7 @@ class AddExercise extends Component {
     arr[item.id][`${type}`] = newVal;
     this.setState({ sets: arr });
   };
+
   render() {
     return (
       <View>
