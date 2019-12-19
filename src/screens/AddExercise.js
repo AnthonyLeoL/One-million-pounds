@@ -23,19 +23,19 @@ class AddExercise extends Component {
     };
   }
 
-  cleanSets = () => {
-    let arr = this.state.sets.filter(record => record.reps || record.weight);
-
+  cleanSets = arr => {
+    arr = arr.filter(record => record.reps || record.weight);
     if (arr.length === 0) arr = [{ reps: 0, weight: 0, id: 0 }];
     this.setState({ sets: arr });
   };
+
   changeValue = (item, newVal, type) => {
     let arr = this.state.sets;
     let index = arr.findIndex(el => {
       return el.id === item.id;
     });
     arr[index][`${type}`] = newVal;
-    this.cleanSets();
+    this.setState({ sets: arr });
 
     this.props.navigation.state.params.returnData(
       this.state.sets,
@@ -43,6 +43,13 @@ class AddExercise extends Component {
     );
   };
 
+  deleteSet = index => {
+    let arr = this.state.sets;
+    arr.splice(index, 1);
+    if (arr.length == 0) arr = [{ reps: 0, weight: 0, id: 0 }];
+
+    this.setState({ sets: arr });
+  };
   render() {
     return (
       <View>
@@ -63,6 +70,9 @@ class AddExercise extends Component {
             renderItem={({ item, index }) => {
               return (
                 <View>
+                  <TouchableOpacity onPress={() => this.deleteSet(index)}>
+                    <Text>X</Text>
+                  </TouchableOpacity>
                   <Text>Set {index + 1} </Text>
                   <Set
                     reps={item.reps}
