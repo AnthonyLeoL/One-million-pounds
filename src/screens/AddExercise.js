@@ -11,55 +11,66 @@ import {
 } from "react-native";
 
 import Set from "../components/Set";
-//convert to finctional component with hooks
 
 class AddExercise extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: this.props.navigation.state.params.currentData.name,
-      sets: this.props.navigation.state.params.currentData.exercises,
-      id: this.props.navigation.state.params.currentData.nextID
+      sets:
+        this.props.navigation.state.params.currentData.sets.length > 0
+          ? this.props.navigation.state.params.currentData.sets
+          : [{ reps: 0, weight: 0, id: 0, weightLifted: 0 }],
+      id: this.props.navigation.state.params.currentData.nextID + 1,
+      totalLifted: this.props.navigation.state.params.currentData.totalLifted
     };
   }
-
-  cleanSets = arr => {
-    arr = arr.filter(record => record.reps || record.weight);
-    if (arr.length === 0) arr = [{ reps: 0, weight: 0, id: 0 }];
-    this.setState({ sets: arr });
-  };
 
   changeValue = (item, newVal, type) => {
     let arr = this.state.sets;
     let index = arr.findIndex(el => {
       return el.id === item.id;
     });
+    let change = -arr[index].weightLifted;
     arr[index][`${type}`] = newVal;
-    this.setState({ sets: arr });
 
-    this.props.navigation.state.params.returnData(
-      this.state.sets,
-      this.state.name
-    );
+    arr[index].weightLifted = arr[index].reps * arr[index].weight;
+    change += arr[index].weightLifted;
+    console.log("change", change);
+    console.log("total", this.state.totalLifted + change);
+    let newTotal = this.state.totalLifted + change;
+
+    this.setState({ sets: arr, totalLifted: newTotal });
+
+    this.props.navigation.state.params.returnWeight(this.state.sets, newTotal);
   };
-
+  changeName = val => {
+    this.setState({ name: val });
+    this.props.navigation.state.params.returnName(val);
+  };
   deleteSet = index => {
     let arr = this.state.sets;
-    arr.splice(index, 1);
-    if (arr.length == 0) arr = [{ reps: 0, weight: 0, id: 0 }];
+    let deleted = arr.splice(index, 1)[0];
+    if (arr.length == 0) arr = [{ reps: 0, weight: 0, id: 0, weightLifted: 0 }];
+    let newTotal = this.state.totalLifted - deleted.weightLifted;
+    this.setState({ sets: arr, totalLifted: newTotal });
 
-    this.setState({ sets: arr });
+    this.props.navigation.state.params.returnWeight(this.state.sets, newTotal);
   };
+
   render() {
+    // convert to displaySet component
     return (
       <View>
         <View>
           <Text>Name</Text>
           <TextInput
-            placeholder="name"
+            placeholder="Name"
+            autoCapitalize="words"
+            autoCorrect
             value={this.state.name}
             onChangeText={val => {
-              this.setState({ name: val });
+              this.changeName(val);
             }}
           />
         </View>
@@ -79,6 +90,10 @@ class AddExercise extends Component {
                     weight={item.weight}
                     onChange={(val, type) => this.changeValue(item, val, type)}
                   />
+                  <Text>
+                    Weight Lifted:{" "}
+                    {isNaN(item.weightLifted) ? "Err" : item.weightLifted}
+                  </Text>
                 </View>
               );
             }}
@@ -90,7 +105,7 @@ class AddExercise extends Component {
             this.setState({
               sets: [
                 ...this.state.sets,
-                { reps: 0, weight: 0, id: this.state.id }
+                { reps: 0, weight: 0, id: this.state.id, weightLifted: 0 }
               ],
               id: this.state.id + 1
             })

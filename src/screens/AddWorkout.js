@@ -1,19 +1,30 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList
+} from "react-native";
 
 class AddWorkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      exercises: [],
+      sets: [],
+      exercises: [{ sets: [], totalLifted: 0, name: "", nextID: 0 }],
+      totalLifted: 0,
       name: "",
       nextID: 0
     };
   }
-  returnData = (set, name) => {
+  returnName = (name, index) => {
+    this.setState({ name });
+  };
+  returnWeight = (set, totalLifted) => {
     this.setState({
-      exercises: set,
-      name: name,
+      sets: set,
+      totalLifted: totalLifted,
       nextID: set[set.length - 1] ? set[set.length - 1].id + 1 : 0
     });
   };
@@ -24,14 +35,19 @@ class AddWorkout extends Component {
         <TouchableOpacity
           onPress={() =>
             this.props.navigation.navigate("AddExercise", {
-              returnData: this.returnData.bind(this),
+              returnWeight: this.returnWeight.bind(this),
+              returnName: this.returnName.bind(this),
               currentData: this.state
             })
           }
         >
-          <Text>New Exercise</Text>
+          {this.state.name ? (
+            <Text>{this.state.name}</Text>
+          ) : (
+            <Text>Add New</Text>
+          )}
         </TouchableOpacity>
-        <View>{this.state.exercises.map(item => console.log())}</View>
+        <Text>Weight: {this.state.totalLifted}</Text>
       </View>
     );
   }
