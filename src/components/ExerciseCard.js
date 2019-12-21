@@ -1,0 +1,22 @@
+import React, { Component, useState } from "react";
+import {
+  Button,
+  StyleSheet,
+  TextInput,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList
+} from "react-native";
+
+const ExerciseCard = ({ exerciseInfo }) => {
+  console.log(exerciseInfo);
+  return (
+    <View>
+      <Text>Name: {exerciseInfo.name}</Text>
+      <Text>Total Lifted{exerciseInfo.totalLifted}</Text>
+    </View>
+  );
+};
+
+export default ExerciseCard;

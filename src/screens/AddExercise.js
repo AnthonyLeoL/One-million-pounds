@@ -5,7 +5,6 @@ import {
   TextInput,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   FlatList
 } from "react-native";
@@ -22,7 +21,8 @@ class AddExercise extends Component {
           ? this.props.navigation.state.params.currentData.sets
           : [{ reps: 0, weight: 0, id: 0, weightLifted: 0 }],
       id: this.props.navigation.state.params.currentData.nextID + 1,
-      totalLifted: this.props.navigation.state.params.currentData.totalLifted
+      totalLifted: this.props.navigation.state.params.currentData.totalLifted,
+      index: this.props.navigation.state.params.index
     };
   }
 
@@ -33,21 +33,22 @@ class AddExercise extends Component {
     });
     let change = -arr[index].weightLifted;
     arr[index][`${type}`] = newVal;
-
     arr[index].weightLifted = arr[index].reps * arr[index].weight;
     change += arr[index].weightLifted;
-    console.log("change", change);
-    console.log("total", this.state.totalLifted + change);
     let newTotal = this.state.totalLifted + change;
-
     this.setState({ sets: arr, totalLifted: newTotal });
-
-    this.props.navigation.state.params.returnWeight(this.state.sets, newTotal);
+    this.props.navigation.state.params.returnWeight(
+      this.state.sets,
+      newTotal,
+      this.state.index
+    );
   };
+
   changeName = val => {
     this.setState({ name: val });
-    this.props.navigation.state.params.returnName(val);
+    this.props.navigation.state.params.returnName(val, this.state.index);
   };
+
   deleteSet = index => {
     let arr = this.state.sets;
     let deleted = arr.splice(index, 1)[0];
@@ -55,7 +56,11 @@ class AddExercise extends Component {
     let newTotal = this.state.totalLifted - deleted.weightLifted;
     this.setState({ sets: arr, totalLifted: newTotal });
 
-    this.props.navigation.state.params.returnWeight(this.state.sets, newTotal);
+    this.props.navigation.state.params.returnWeight(
+      this.state.sets,
+      newTotal,
+      this.state.index
+    );
   };
 
   render() {
