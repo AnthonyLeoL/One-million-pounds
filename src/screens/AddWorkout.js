@@ -14,7 +14,7 @@ class AddWorkout extends Component {
     super(props);
     this.state = {
       exercises: [{ sets: [], totalLifted: 0, name: "", nextID: 0 }],
-      index: 0
+      totalLifted: 0
     };
   }
 
@@ -24,15 +24,20 @@ class AddWorkout extends Component {
     this.setState({ exercises: changed });
   };
 
-  returnWeight = (set, totalLifted, index) => {
+  returnWeight = (sets, totalLifted, index) => {
     let changed = this.state.exercises;
-    changed[index].sets = set;
-    changed[index].totalLifted = totalLifted;
-    changed[index].nextID = set[set.length - 1]
-      ? set[set.length - 1].id + 1
-      : 0;
+    let changedWeight = -changed[index].totalLifted;
+    changed[index] = {
+      sets,
+      totalLifted,
+      nextID: sets[sets.length - 1] ? sets[sets.length - 1].id + 1 : 0
+    };
+    changedWeight += changed[index].totalLifted;
 
-    this.setState({ exercises: changed });
+    this.setState({
+      exercises: changed,
+      totalLifted: this.state.totalLifted + changedWeight
+    });
   };
 
   deleteExercise = index => {
@@ -40,7 +45,10 @@ class AddWorkout extends Component {
     let deleted = arr.splice(index, 1)[0];
     if (arr.length == 0)
       arr = [{ sets: [], totalLifted: 0, name: "", nextID: 0 }];
-    this.setState({ exercises: arr });
+    this.setState({
+      exercises: arr,
+      totalLifted: this.state.totalLifted - deleted.totalLifted
+    });
   };
   render() {
     return (
@@ -64,21 +72,11 @@ class AddWorkout extends Component {
               {item.name !== "" || item.sets.length ? (
                 <ExerciseCard key={i.toString()} exerciseInfo={item} />
               ) : (
-                <Text>Edit Exercise</Text>
+                <Text>Click to start adding info</Text>
               )}
-
-              {/* {this.state.exercises[this.state.index].name ? (
-            <Text>{this.state.exercises[this.state.index].name}</Text>
-          ) : (
-            <Text>Add New</Text>
-          )} */}
             </TouchableOpacity>
           </View>
         ))}
-
-        {/* <Text>
-          Weight: {this.state.exercises[this.state.index].totalLifted}
-        </Text> */}
 
         <TouchableOpacity
           onPress={() => {
@@ -92,6 +90,7 @@ class AddWorkout extends Component {
         >
           <Text>New</Text>
         </TouchableOpacity>
+        <Text>TOTAL WEIGHTLIFTED:{this.state.totalLifted}</Text>
       </View>
     );
   }

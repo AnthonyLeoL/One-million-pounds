@@ -116,6 +116,7 @@ class AddExercise extends Component {
             })
           }
         >
+          <Text>Exercise Total: {this.state.totalLifted}</Text>
           <Text>New Set</Text>
         </TouchableOpacity>
       </View>

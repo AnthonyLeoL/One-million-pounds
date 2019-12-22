@@ -10,11 +10,10 @@ import {
 } from "react-native";
 
 const ExerciseCard = ({ exerciseInfo }) => {
-  console.log(exerciseInfo);
   return (
     <View>
       <Text>Name: {exerciseInfo.name}</Text>
-      <Text>Total Lifted{exerciseInfo.totalLifted}</Text>
+      <Text>Total Lifted: {exerciseInfo.totalLifted}</Text>
     </View>
   );
 };
