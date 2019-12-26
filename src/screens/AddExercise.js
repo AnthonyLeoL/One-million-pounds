@@ -64,7 +64,6 @@ class AddExercise extends Component {
   };
 
   render() {
-    // convert to displaySet component
     return (
       <View>
         <View>

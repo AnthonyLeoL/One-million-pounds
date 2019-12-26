@@ -4,17 +4,24 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
   FlatList
 } from "react-native";
 
 import ExerciseCard from "../components/ExerciseCard";
+import Header from "../components/Header";
 
 class AddWorkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      exercises: [{ sets: [], totalLifted: 0, name: "", nextID: 0 }],
-      totalLifted: 0
+      exercises:
+        this.props.navigation.state.params.currentData.exercises.length > 0
+          ? this.props.navigation.state.params.currentData.exercises
+          : [{ sets: [], totalLifted: 0, name: "", nextID: 0 }],
+      totalLifted: this.props.navigation.state.params.currentData.totalLifted,
+
+      index: this.props.navigation.state.params.index
     };
   }
 
@@ -30,14 +37,21 @@ class AddWorkout extends Component {
     changed[index] = {
       sets,
       totalLifted,
-      nextID: sets[sets.length - 1] ? sets[sets.length - 1].id + 1 : 0
+      nextID: sets[sets.length - 1] ? sets[sets.length - 1].id + 1 : 0,
+      name: changed[index].name
     };
     changedWeight += changed[index].totalLifted;
-
+    let newTotal = this.state.totalLifted + changedWeight;
     this.setState({
       exercises: changed,
-      totalLifted: this.state.totalLifted + changedWeight
+      totalLifted: newTotal
     });
+
+    this.props.navigation.state.params.returnWeight(
+      changed,
+      newTotal,
+      this.state.index
+    );
   };
 
   deleteExercise = index => {
@@ -45,14 +59,22 @@ class AddWorkout extends Component {
     let deleted = arr.splice(index, 1)[0];
     if (arr.length == 0)
       arr = [{ sets: [], totalLifted: 0, name: "", nextID: 0 }];
+    let newTotal = this.state.totalLifted - deleted.totalLifted;
     this.setState({
       exercises: arr,
-      totalLifted: this.state.totalLifted - deleted.totalLifted
+      totalLifted: newTotal
     });
+
+    this.props.navigation.state.params.returnWeight(
+      arr,
+      newTotal,
+      this.state.index
+    );
   };
+
   render() {
     return (
-      <View>
+      <ScrollView>
         {this.state.exercises.map((item, i) => (
           <View key={i.toString()}>
             <TouchableOpacity onPress={() => this.deleteExercise(i)}>
@@ -91,7 +113,7 @@ class AddWorkout extends Component {
           <Text>New</Text>
         </TouchableOpacity>
         <Text>TOTAL WEIGHTLIFTED:{this.state.totalLifted}</Text>
-      </View>
+      </ScrollView>
     );
   }
 }

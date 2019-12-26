@@ -3,14 +3,16 @@ import { createStackNavigator } from "react-navigation-stack";
 import TestScreen from "./src/screens/Test";
 import AddWorkOutScreen from "./src/screens/AddWorkout";
 import AddExerciseScreen from "./src/screens/AddExercise";
+import HomeScreen from "./src/screens/Home";
 
 const navigator = createStackNavigator(
   {
     AddWorkout: AddWorkOutScreen,
-    AddExercise: AddExerciseScreen
+    AddExercise: AddExerciseScreen,
+    Home: HomeScreen
   },
   {
-    initialRouteName: "AddWorkout",
+    initialRouteName: "Home",
     defaultNavigationOptions: {
       title: "OMP"
     }
