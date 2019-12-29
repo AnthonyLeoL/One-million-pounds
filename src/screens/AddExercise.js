@@ -27,6 +27,9 @@ class AddExercise extends Component {
   }
 
   changeValue = (item, newVal, type) => {
+    if (isNaN(newVal) || newVal.includes(" ")) return;
+    if (!newVal.match(/^\d{0,4}(\.\d{0,2})?$/)) return;
+
     let arr = this.state.sets;
     let index = arr.findIndex(el => {
       return el.id === item.id;
@@ -34,8 +37,11 @@ class AddExercise extends Component {
     let change = -arr[index].weightLifted;
     arr[index][`${type}`] = newVal;
     arr[index].weightLifted = arr[index].reps * arr[index].weight;
+    arr[index].weightLifted = Math.round(arr[index].weightLifted * 100) / 100;
+
     change += arr[index].weightLifted;
     let newTotal = this.state.totalLifted + change;
+    newTotal = Math.round(newTotal * 100) / 100;
     this.setState({ sets: arr, totalLifted: newTotal });
     this.props.navigation.state.params.returnWeight(
       this.state.sets,

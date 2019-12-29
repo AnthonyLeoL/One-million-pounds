@@ -42,6 +42,7 @@ class AddWorkout extends Component {
     };
     changedWeight += changed[index].totalLifted;
     let newTotal = this.state.totalLifted + changedWeight;
+    newTotal = Math.round(newTotal * 100) / 100;
     this.setState({
       exercises: changed,
       totalLifted: newTotal

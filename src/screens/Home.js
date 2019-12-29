@@ -5,7 +5,8 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from "react-native";
 
 class Home extends Component {
@@ -20,16 +21,18 @@ class Home extends Component {
   returnWeight = (exercises, totalLifted, index) => {
     let changed = this.state.workouts;
     let changedWeight = -changed[index].totalLifted;
+    console.log("before", changedWeight);
     changed[index] = {
       exercises,
       totalLifted
     };
 
     changedWeight += changed[index].totalLifted;
+    console.log("after", changedWeight);
 
     this.setState({
       workouts: changed,
-      totalLifted: totalLifted + changedWeight
+      totalLifted: this.state.totalLifted + changedWeight
     });
   };
 
@@ -44,18 +47,29 @@ class Home extends Component {
     });
   };
 
+  loadData = async () => {
+    let returnedObj = await AsyncStorage.getItem("temp");
+    returnedObj = JSON.parse(returnedObj);
+    console.log(returnedObj);
+    this.setState({
+      workouts: returnedObj.workouts,
+      totalLifted: returnedObj.totalLifted + 1
+    });
+  };
+  saveData = () => {
+    const { workouts, totalLifted } = this.state;
+    let objToSave = { workouts, totalLifted };
+    AsyncStorage.setItem("temp", JSON.stringify(objToSave));
+  };
+
   render() {
     return (
       <ScrollView>
-        <Text>Home</Text>
+        <Text>Total To Date: {this.state.totalLifted}</Text>
         {this.state.workouts.map((item, i) => (
           <View key={i}>
             <Text>Date</Text>
-            <TouchableOpacity
-              onPress={i => {
-                this.deleteWorkOut(i);
-              }}
-            >
+            <TouchableOpacity onPress={i => this.deleteWorkOut(i)}>
               <Text>X</Text>
             </TouchableOpacity>
             <Text>{item.totalLifted}</Text>
@@ -83,6 +97,13 @@ class Home extends Component {
           }}
         >
           <Text>New</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={this.saveData}>
+          <Text>Save</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.loadData}>
+          <Text>Load</Text>
         </TouchableOpacity>
       </ScrollView>
     );
