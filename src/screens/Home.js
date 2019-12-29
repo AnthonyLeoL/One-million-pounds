@@ -53,7 +53,7 @@ class Home extends Component {
     console.log(returnedObj);
     this.setState({
       workouts: returnedObj.workouts,
-      totalLifted: returnedObj.totalLifted + 1
+      totalLifted: returnedObj.totalLifted
     });
   };
   saveData = () => {
