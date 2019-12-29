@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  FlatList
+  FlatList,
+  BackHandler
 } from "react-native";
 
 import ExerciseCard from "../components/ExerciseCard";
@@ -24,7 +25,24 @@ class AddWorkout extends Component {
       index: this.props.navigation.state.params.index
     };
   }
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.handleBackButtonPressAndroid
+    );
+  }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this.handleBackButtonPressAndroid
+    );
+  }
+
+  handleBackButtonPressAndroid = () => {
+    this.onSave();
+    return true;
+  };
   returnName = (name, index) => {
     let changed = this.state.exercises;
     changed[index].name = name;
@@ -48,11 +66,11 @@ class AddWorkout extends Component {
       totalLifted: newTotal
     });
 
-    this.props.navigation.state.params.returnWeight(
-      changed,
-      newTotal,
-      this.state.index
-    );
+    // this.props.navigation.state.params.returnWeight(
+    //   changed,
+    //   newTotal,
+    //   this.state.index
+    // );
   };
 
   deleteExercise = index => {
@@ -65,14 +83,15 @@ class AddWorkout extends Component {
       exercises: arr,
       totalLifted: newTotal
     });
-
+  };
+  onSave = () => {
     this.props.navigation.state.params.returnWeight(
-      arr,
-      newTotal,
+      this.state.exercises,
+      this.state.totalLifted,
       this.state.index
     );
+    this.props.navigation.goBack();
   };
-
   render() {
     return (
       <ScrollView>
@@ -114,6 +133,9 @@ class AddWorkout extends Component {
           <Text>New</Text>
         </TouchableOpacity>
         <Text>TOTAL WEIGHTLIFTED:{this.state.totalLifted}</Text>
+        <TouchableOpacity onPress={this.onSave}>
+          <Text>Save and go back</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }

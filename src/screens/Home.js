@@ -17,23 +17,26 @@ class Home extends Component {
       totalLifted: 0
     };
   }
-
+  componentDidMount() {
+    this.loadData();
+    //AsyncStorage.clear();
+  }
   returnWeight = (exercises, totalLifted, index) => {
     let changed = this.state.workouts;
     let changedWeight = -changed[index].totalLifted;
-    console.log("before", changedWeight);
     changed[index] = {
       exercises,
       totalLifted
     };
-
     changedWeight += changed[index].totalLifted;
-    console.log("after", changedWeight);
-
-    this.setState({
-      workouts: changed,
-      totalLifted: this.state.totalLifted + changedWeight
-    });
+    console.log("weight that has bneem changed", changedWeight);
+    this.setState(
+      {
+        workouts: changed,
+        totalLifted: this.state.totalLifted + changedWeight
+      },
+      this.saveData
+    );
   };
 
   deleteWorkOut = index => {
@@ -41,24 +44,34 @@ class Home extends Component {
     let deleted = arr.splice(index, 1)[0];
     if (arr.length == 0) arr = [{ exercises: [], totalLifted: 0 }];
     let newTotal = this.state.totalLifted - deleted.totalLifted;
-    this.setState({
-      workouts: arr,
-      totalLifted: newTotal
-    });
+    this.setState(
+      {
+        workouts: arr,
+        totalLifted: newTotal
+      },
+      this.saveData
+    );
   };
 
   loadData = async () => {
     let returnedObj = await AsyncStorage.getItem("temp");
     returnedObj = JSON.parse(returnedObj);
-    console.log(returnedObj);
-    this.setState({
-      workouts: returnedObj.workouts,
-      totalLifted: returnedObj.totalLifted
-    });
+    try {
+      this.setState({
+        workouts: returnedObj.workouts,
+        totalLifted: returnedObj.totalLifted
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      console.log(returnedObj);
+    }
   };
+
   saveData = () => {
     const { workouts, totalLifted } = this.state;
     let objToSave = { workouts, totalLifted };
+    console.log("inSave", totalLifted);
     AsyncStorage.setItem("temp", JSON.stringify(objToSave));
   };
 
@@ -97,13 +110,6 @@ class Home extends Component {
           }}
         >
           <Text>New</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.saveData}>
-          <Text>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.loadData}>
-          <Text>Load</Text>
         </TouchableOpacity>
       </ScrollView>
     );

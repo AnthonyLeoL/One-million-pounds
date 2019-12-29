@@ -4,7 +4,8 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 
 const Set = props => {

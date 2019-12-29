@@ -1,12 +1,15 @@
 import React, { Component, useState } from "react";
 import {
-  Button,
+  AsyncStorage,
   StyleSheet,
   TextInput,
   Text,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
+  BackHandler
 } from "react-native";
 
 import Set from "../components/Set";
@@ -25,6 +28,24 @@ class AddExercise extends Component {
       index: this.props.navigation.state.params.index
     };
   }
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.handleBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this.handleBackButtonPressAndroid
+    );
+  }
+
+  handleBackButtonPressAndroid = () => {
+    this.onSave();
+    return true;
+  };
 
   changeValue = (item, newVal, type) => {
     if (isNaN(newVal) || newVal.includes(" ")) return;
@@ -43,16 +64,11 @@ class AddExercise extends Component {
     let newTotal = this.state.totalLifted + change;
     newTotal = Math.round(newTotal * 100) / 100;
     this.setState({ sets: arr, totalLifted: newTotal });
-    this.props.navigation.state.params.returnWeight(
-      this.state.sets,
-      newTotal,
-      this.state.index
-    );
   };
 
   changeName = val => {
     this.setState({ name: val });
-    this.props.navigation.state.params.returnName(val, this.state.index);
+    //this.props.navigation.state.params.returnName(val, this.state.index);
   };
 
   deleteSet = index => {
@@ -62,69 +78,90 @@ class AddExercise extends Component {
     let newTotal = this.state.totalLifted - deleted.weightLifted;
     this.setState({ sets: arr, totalLifted: newTotal });
 
+    // this.props.navigation.state.params.returnWeight(
+    //   this.state.sets,
+    //   newTotal,
+    //   this.state.index
+    // );
+  };
+
+  onSave = () => {
     this.props.navigation.state.params.returnWeight(
       this.state.sets,
-      newTotal,
+      this.state.totalLifted,
       this.state.index
     );
+    this.props.navigation.state.params.returnName(
+      this.state.name,
+      this.state.index
+    );
+
+    this.props.navigation.goBack();
   };
 
   render() {
     return (
-      <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View>
-          <Text>Name</Text>
-          <TextInput
-            placeholder="Name"
-            autoCapitalize="words"
-            autoCorrect
-            value={this.state.name}
-            onChangeText={val => {
-              this.changeName(val);
-            }}
-          />
+          <View>
+            <Text>Name</Text>
+            <TextInput
+              placeholder="Name"
+              autoCapitalize="words"
+              autoCorrect
+              value={this.state.name}
+              onChangeText={val => {
+                this.changeName(val);
+              }}
+            />
+          </View>
+          <View>
+            <FlatList
+              data={this.state.sets}
+              horizontal
+              renderItem={({ item, index }) => {
+                return (
+                  <View>
+                    <TouchableOpacity onPress={() => this.deleteSet(index)}>
+                      <Text>X</Text>
+                    </TouchableOpacity>
+                    <Text>Set {index + 1} </Text>
+                    <Set
+                      reps={item.reps}
+                      weight={item.weight}
+                      onChange={(val, type) =>
+                        this.changeValue(item, val, type)
+                      }
+                    />
+                    <Text>
+                      Weight Lifted:{" "}
+                      {isNaN(item.weightLifted) ? "Err" : item.weightLifted}
+                    </Text>
+                  </View>
+                );
+              }}
+              keyExtractor={item => item.id.toString()}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() =>
+              this.setState({
+                sets: [
+                  ...this.state.sets,
+                  { reps: 0, weight: 0, id: this.state.id, weightLifted: 0 }
+                ],
+                id: this.state.id + 1
+              })
+            }
+          >
+            <Text>Exercise Total: {this.state.totalLifted}</Text>
+            <Text>New Set</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onSave}>
+            <Text>Save and go back</Text>
+          </TouchableOpacity>
         </View>
-        <View>
-          <FlatList
-            data={this.state.sets}
-            horizontal
-            renderItem={({ item, index }) => {
-              return (
-                <View>
-                  <TouchableOpacity onPress={() => this.deleteSet(index)}>
-                    <Text>X</Text>
-                  </TouchableOpacity>
-                  <Text>Set {index + 1} </Text>
-                  <Set
-                    reps={item.reps}
-                    weight={item.weight}
-                    onChange={(val, type) => this.changeValue(item, val, type)}
-                  />
-                  <Text>
-                    Weight Lifted:{" "}
-                    {isNaN(item.weightLifted) ? "Err" : item.weightLifted}
-                  </Text>
-                </View>
-              );
-            }}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View>
-        <TouchableOpacity
-          onPress={() =>
-            this.setState({
-              sets: [
-                ...this.state.sets,
-                { reps: 0, weight: 0, id: this.state.id, weightLifted: 0 }
-              ],
-              id: this.state.id + 1
-            })
-          }
-        >
-          <Text>Exercise Total: {this.state.totalLifted}</Text>
-          <Text>New Set</Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
