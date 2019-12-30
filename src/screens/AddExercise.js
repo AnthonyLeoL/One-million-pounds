@@ -80,7 +80,7 @@ class AddExercise extends Component {
   };
 
   onSave = () => {
-    this.props.navigation.state.params.updateFromChild(
+    this.props.navigation.state.params.updateWorkoutsFromChild(
       this.state.name,
       this.state.sets,
       this.state.totalLifted,

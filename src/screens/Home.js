@@ -8,15 +8,7 @@ import {
   TouchableOpacity,
   AsyncStorage
 } from "react-native";
-class WORKOUT {
-  constructor() {
-    this.exercises = [];
-    this.totalLifted = 0;
-    this.date = new Date();
-    // this.date = this.date.toDateString();
-    return this;
-  }
-}
+import { WORKOUT } from "../Models";
 
 class Home extends Component {
   constructor(props) {
@@ -27,16 +19,15 @@ class Home extends Component {
     };
   }
   componentDidMount() {
-    this.loadData();
-    // AsyncStorage.clear();
+    //this.loadData();
+    AsyncStorage.clear();
   }
-  updateFromChild = (exercises, totalLifted, index) => {
+  updateHomeFromChild = (exercises, totalLifted, index) => {
     let changed = this.state.workouts;
     let changedWeight = -changed[index].totalLifted;
-    changed[index] = {
-      exercises,
-      totalLifted
-    };
+
+    changed[index] = new WORKOUT(exercises, totalLifted, changed[index].date);
+
     changedWeight += changed[index].totalLifted;
     this.setState(
       {
@@ -80,12 +71,19 @@ class Home extends Component {
     AsyncStorage.setItem("temp", JSON.stringify(objToSave));
   };
 
+  addNewWorkout = () => {
+    let workouts = this.state.workouts;
+    workouts.push(new WORKOUT());
+    this.setState({ workouts }, this.saveData());
+  };
   render() {
     return (
       <ScrollView>
         <Text>Total To Date: {this.state.totalLifted}</Text>
         {this.state.workouts.map((item, i) => (
           <View key={i}>
+            {console.log("Type of", typeof item.date)}
+            {console.log(item)}
             <Text>Date {item.date.toLocaleDateString()}</Text>
             <TouchableOpacity onPress={i => this.deleteWorkOut(i)}>
               <Text>X</Text>
@@ -94,7 +92,7 @@ class Home extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate("AddWorkout", {
-                  updateFromChild: this.updateFromChild.bind(this),
+                  updateHomeFromChild: this.updateHomeFromChild.bind(this),
                   currentData: this.state.workouts[i],
                   index: i
                 })

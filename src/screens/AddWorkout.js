@@ -44,7 +44,7 @@ class AddWorkout extends Component {
     return true;
   };
 
-  updateFromChild = (name, sets, totalLifted, index) => {
+  updateWorkoutsFromChild = (name, sets, totalLifted, index) => {
     let changed = this.state.exercises;
     let changedWeight = -changed[index].totalLifted;
     changed[index] = {
@@ -73,7 +73,7 @@ class AddWorkout extends Component {
     });
   };
   onSave = () => {
-    this.props.navigation.state.params.updateFromChild(
+    this.props.navigation.state.params.updateHomeFromChild(
       this.state.exercises,
       this.state.totalLifted,
       this.state.index
@@ -92,7 +92,9 @@ class AddWorkout extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate("AddExercise", {
-                  updateFromChild: this.updateFromChild.bind(this),
+                  updateWorkoutsFromChild: this.updateWorkoutsFromChild.bind(
+                    this
+                  ),
                   currentData: this.state.exercises[i],
                   index: i
                 })
