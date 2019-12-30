@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import ExerciseCard from "../components/ExerciseCard";
-const EXERCISES = { sets: [], totalLifted: 0, name: "", nextID: 0 };
+import { Exercise } from "../Models";
 
 class AddWorkout extends Component {
   constructor(props) {
@@ -19,8 +19,8 @@ class AddWorkout extends Component {
       exercises:
         this.props.navigation.state.params.currentData.exercises.length > 0
           ? this.props.navigation.state.params.currentData.exercises
-          : [EXERCISES],
-      totalLifted: this.props.navigation.state.params.currentData.totalLifted,
+          : [new Exercise()],
+      workoutTotal: this.props.navigation.state.params.currentData.workoutTotal,
 
       index: this.props.navigation.state.params.index
     };
@@ -44,38 +44,39 @@ class AddWorkout extends Component {
     return true;
   };
 
-  updateWorkoutsFromChild = (name, sets, totalLifted, index) => {
+  updateWorkoutsFromChild = (name, sets, exerciseTotal, index) => {
     let changed = this.state.exercises;
-    let changedWeight = -changed[index].totalLifted;
-    changed[index] = {
+    let changedWeight = -changed[index].exerciseTotal;
+    changed[index] = new Exercise(
       sets,
-      totalLifted,
-      nextID: sets[sets.length - 1] ? sets[sets.length - 1].id + 1 : 0,
-      name: name
-    };
-    changedWeight += changed[index].totalLifted;
-    let newTotal = this.state.totalLifted + changedWeight;
+      exerciseTotal,
+      name,
+      sets[sets.length - 1] ? sets[sets.length - 1].id + 1 : 0
+    );
+
+    changedWeight += changed[index].exerciseTotal;
+    let newTotal = this.state.workoutTotal + changedWeight;
     newTotal = Math.round(newTotal * 100) / 100;
     this.setState({
       exercises: changed,
-      totalLifted: newTotal
+      workoutTotal: newTotal
     });
   };
 
   deleteExercise = index => {
     let arr = this.state.exercises;
     let deleted = arr.splice(index, 1)[0];
-    if (arr.length == 0) arr = [EXERCISES];
-    let newTotal = this.state.totalLifted - deleted.totalLifted;
+    if (arr.length == 0) arr = [new Exercise()];
+    let newTotal = this.state.workoutTotal - deleted.exerciseTotal;
     this.setState({
       exercises: arr,
-      totalLifted: newTotal
+      workoutTotal: newTotal
     });
   };
   onSave = () => {
     this.props.navigation.state.params.updateHomeFromChild(
       this.state.exercises,
-      this.state.totalLifted,
+      this.state.workoutTotal,
       this.state.index
     );
     this.props.navigation.goBack();
@@ -112,16 +113,13 @@ class AddWorkout extends Component {
         <TouchableOpacity
           onPress={() => {
             this.setState({
-              exercises: [
-                ...this.state.exercises,
-                { sets: [], totalLifted: 0, name: "", nextID: 0 }
-              ]
+              exercises: [...this.state.exercises, new Exercise()]
             });
           }}
         >
           <Text>New</Text>
         </TouchableOpacity>
-        <Text>TOTAL WEIGHTLIFTED:{this.state.totalLifted}</Text>
+        <Text>TOTAL WEIGHTLIFTED:{this.state.workoutTotal}</Text>
         <TouchableOpacity onPress={this.onSave}>
           <Text>Save and go back</Text>
         </TouchableOpacity>

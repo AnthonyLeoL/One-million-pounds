@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 import Set from "../components/Set";
-const setFormat = { reps: 0, weight: 0, id: 0, weightLifted: 0 };
+import { Set as SetSchema } from "../Models";
 
 class AddExercise extends Component {
   constructor(props) {
@@ -23,9 +23,10 @@ class AddExercise extends Component {
       sets:
         this.props.navigation.state.params.currentData.sets.length > 0
           ? this.props.navigation.state.params.currentData.sets
-          : [setFormat],
+          : [new SetSchema()],
       id: this.props.navigation.state.params.currentData.nextID + 1,
-      totalLifted: this.props.navigation.state.params.currentData.totalLifted,
+      exerciseTotal: this.props.navigation.state.params.currentData
+        .exerciseTotal,
       index: this.props.navigation.state.params.index
     };
   }
@@ -56,15 +57,15 @@ class AddExercise extends Component {
     let index = arr.findIndex(el => {
       return el.id === item.id;
     });
-    let change = -arr[index].weightLifted;
+    let change = -arr[index].setTotal;
     arr[index][`${type}`] = newVal;
-    arr[index].weightLifted = arr[index].reps * arr[index].weight;
-    arr[index].weightLifted = Math.round(arr[index].weightLifted * 100) / 100;
+    arr[index].setTotal = arr[index].reps * arr[index].weight;
+    arr[index].setTotal = Math.round(arr[index].setTotal * 100) / 100;
 
-    change += arr[index].weightLifted;
-    let newTotal = this.state.totalLifted + change;
+    change += arr[index].setTotal;
+    let newTotal = this.state.exerciseTotal + change;
     newTotal = Math.round(newTotal * 100) / 100;
-    this.setState({ sets: arr, totalLifted: newTotal });
+    this.setState({ sets: arr, exerciseTotal: newTotal });
   };
 
   changeName = val => {
@@ -74,16 +75,16 @@ class AddExercise extends Component {
   deleteSet = index => {
     let arr = this.state.sets;
     let deleted = arr.splice(index, 1)[0];
-    if (arr.length == 0) arr = [setFormat];
-    let newTotal = this.state.totalLifted - deleted.weightLifted;
-    this.setState({ sets: arr, totalLifted: newTotal });
+    if (arr.length == 0) arr = [new SetSchema()];
+    let newTotal = this.state.exerciseTotal - deleted.setTotal;
+    this.setState({ sets: arr, exerciseTotal: newTotal });
   };
 
   onSave = () => {
     this.props.navigation.state.params.updateWorkoutsFromChild(
       this.state.name,
       this.state.sets,
-      this.state.totalLifted,
+      this.state.exerciseTotal,
       this.state.index
     );
     this.props.navigation.goBack();
@@ -125,7 +126,7 @@ class AddExercise extends Component {
                     />
                     <Text>
                       Weight Lifted:{" "}
-                      {isNaN(item.weightLifted) ? "Err" : item.weightLifted}
+                      {isNaN(item.setTotal) ? "Err" : item.setTotal}
                     </Text>
                   </View>
                 );
@@ -136,15 +137,12 @@ class AddExercise extends Component {
           <TouchableOpacity
             onPress={() =>
               this.setState({
-                sets: [
-                  ...this.state.sets,
-                  { reps: 0, weight: 0, id: this.state.id, weightLifted: 0 }
-                ],
+                sets: [...this.state.sets, new SetSchema(this.state.id)],
                 id: this.state.id + 1
               })
             }
           >
-            <Text>Exercise Total: {this.state.totalLifted}</Text>
+            <Text>Exercise Total: {this.state.exerciseTotal}</Text>
             <Text>New Set</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.onSave}>

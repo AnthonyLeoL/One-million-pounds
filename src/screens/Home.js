@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   AsyncStorage
 } from "react-native";
-import { WORKOUT } from "../Models";
+import { Workout } from "../Models";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      workouts: [new WORKOUT()],
+      workouts: [new Workout()],
       totalLifted: 0
     };
   }
@@ -22,13 +22,13 @@ class Home extends Component {
     //this.loadData();
     AsyncStorage.clear();
   }
-  updateHomeFromChild = (exercises, totalLifted, index) => {
+  updateHomeFromChild = (exercises, workoutTotal, index) => {
     let changed = this.state.workouts;
-    let changedWeight = -changed[index].totalLifted;
+    let changedWeight = -changed[index].workoutTotal;
 
-    changed[index] = new WORKOUT(exercises, totalLifted, changed[index].date);
+    changed[index] = new Workout(exercises, workoutTotal, changed[index].date);
 
-    changedWeight += changed[index].totalLifted;
+    changedWeight += changed[index].workoutTotal;
     this.setState(
       {
         workouts: changed,
@@ -41,8 +41,8 @@ class Home extends Component {
   deleteWorkOut = index => {
     let arr = this.state.workouts;
     let deleted = arr.splice(index, 1)[0];
-    if (arr.length == 0) arr = [new WORKOUT()];
-    let newTotal = this.state.totalLifted - deleted.totalLifted;
+    if (arr.length == 0) arr = [new Workout()];
+    let newTotal = this.state.totalLifted - deleted.workoutTotal;
     this.setState(
       {
         workouts: arr,
@@ -73,7 +73,7 @@ class Home extends Component {
 
   addNewWorkout = () => {
     let workouts = this.state.workouts;
-    workouts.push(new WORKOUT());
+    workouts.push(new Workout());
     this.setState({ workouts }, this.saveData());
   };
   render() {
@@ -82,13 +82,11 @@ class Home extends Component {
         <Text>Total To Date: {this.state.totalLifted}</Text>
         {this.state.workouts.map((item, i) => (
           <View key={i}>
-            {console.log("Type of", typeof item.date)}
-            {console.log(item)}
             <Text>Date {item.date.toLocaleDateString()}</Text>
-            <TouchableOpacity onPress={i => this.deleteWorkOut(i)}>
+            <TouchableOpacity onPress={() => this.deleteWorkOut(i)}>
               <Text>X</Text>
             </TouchableOpacity>
-            <Text>{item.totalLifted}</Text>
+            <Text>{item.workoutTotal}</Text>
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate("AddWorkout", {
@@ -105,7 +103,7 @@ class Home extends Component {
         <TouchableOpacity
           onPress={() => {
             this.setState({
-              workouts: [...this.state.workouts, new WORKOUT()]
+              workouts: [...this.state.workouts, new Workout()]
             });
           }}
         >
