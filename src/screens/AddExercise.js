@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 import Set from "../components/Set";
+const setFormat = { reps: 0, weight: 0, id: 0, weightLifted: 0 };
 
 class AddExercise extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class AddExercise extends Component {
       sets:
         this.props.navigation.state.params.currentData.sets.length > 0
           ? this.props.navigation.state.params.currentData.sets
-          : [{ reps: 0, weight: 0, id: 0, weightLifted: 0 }],
+          : [setFormat],
       id: this.props.navigation.state.params.currentData.nextID + 1,
       totalLifted: this.props.navigation.state.params.currentData.totalLifted,
       index: this.props.navigation.state.params.index
@@ -68,34 +69,23 @@ class AddExercise extends Component {
 
   changeName = val => {
     this.setState({ name: val });
-    //this.props.navigation.state.params.returnName(val, this.state.index);
   };
 
   deleteSet = index => {
     let arr = this.state.sets;
     let deleted = arr.splice(index, 1)[0];
-    if (arr.length == 0) arr = [{ reps: 0, weight: 0, id: 0, weightLifted: 0 }];
+    if (arr.length == 0) arr = [setFormat];
     let newTotal = this.state.totalLifted - deleted.weightLifted;
     this.setState({ sets: arr, totalLifted: newTotal });
-
-    // this.props.navigation.state.params.returnWeight(
-    //   this.state.sets,
-    //   newTotal,
-    //   this.state.index
-    // );
   };
 
   onSave = () => {
-    this.props.navigation.state.params.returnWeight(
+    this.props.navigation.state.params.updateFromChild(
+      this.state.name,
       this.state.sets,
       this.state.totalLifted,
       this.state.index
     );
-    this.props.navigation.state.params.returnName(
-      this.state.name,
-      this.state.index
-    );
-
     this.props.navigation.goBack();
   };
 
