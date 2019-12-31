@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Alert,
   BackHandler
 } from "react-native";
 
@@ -63,6 +64,26 @@ class AddWorkout extends Component {
     });
   };
 
+  confirmDelete = () => {
+    Alert.alert(
+      "Confirm",
+      "Do you want to delete this workout?\nThis action cannot be undone",
+      [
+        {
+          text: "NO",
+          style: "cancel"
+        },
+        {
+          text: "YES",
+          onPress: () => {
+            this.props.navigation.state.params.deleteWorkOut(this.state.index);
+            this.props.navigation.goBack();
+          }
+        }
+      ]
+    );
+  };
+
   deleteExercise = index => {
     let arr = this.state.exercises;
     let deleted = arr.splice(index, 1)[0];
@@ -85,47 +106,85 @@ class AddWorkout extends Component {
     return (
       <ScrollView>
         {this.state.exercises.map((item, i) => (
-          <View key={i.toString()}>
-            <TouchableOpacity onPress={() => this.deleteExercise(i)}>
-              <Text>X</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("AddExercise", {
-                  updateWorkoutsFromChild: this.updateWorkoutsFromChild.bind(
-                    this
-                  ),
-                  currentData: this.state.exercises[i],
-                  index: i
-                })
-              }
-            >
-              {item.name !== "" || item.sets.length ? (
-                <ExerciseCard key={i.toString()} exerciseInfo={item} />
-              ) : (
-                <Text>Click to start adding info</Text>
-              )}
-            </TouchableOpacity>
+          <View style={styles.cardStyle} key={i.toString()}>
+            <View>
+              <TouchableOpacity
+                style={styles.viewStyle}
+                onPress={() =>
+                  this.props.navigation.navigate("AddExercise", {
+                    updateWorkoutsFromChild: this.updateWorkoutsFromChild.bind(
+                      this
+                    ),
+                    currentData: this.state.exercises[i],
+                    index: i
+                  })
+                }
+              >
+                {item.name !== "" || item.sets.length ? (
+                  <View style={{ flexDirection: "column" }}>
+                    <ExerciseCard key={i.toString()} exerciseInfo={item} />
+                    <TouchableOpacity onPress={() => this.deleteExercise(i)}>
+                      <Text style={styles.deleteButton}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <Text style={styles.textStyle}>
+                    Click to start adding info
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
 
         <TouchableOpacity
+          style={styles.buttonStyle}
           onPress={() => {
             this.setState({
               exercises: [...this.state.exercises, new Exercise()]
             });
           }}
         >
-          <Text>New</Text>
+          <Text style={styles.buttonText}>Add New Exercise</Text>
         </TouchableOpacity>
         <Text>TOTAL WEIGHTLIFTED:{this.state.workoutTotal}</Text>
         <TouchableOpacity onPress={this.onSave}>
           <Text>Save and go back</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={this.confirmDelete}>
+          <Text>Delete entire workout</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }
 }
-
+const styles = StyleSheet.create({
+  cardStyle: {
+    borderWidth: 1,
+    borderColor: "black",
+    minHeight: 40
+  },
+  buttonStyle: {
+    borderColor: "green",
+    borderWidth: 1,
+    backgroundColor: "green"
+  },
+  viewStyle: {
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
+  deleteButton: {
+    color: "red",
+    justifyContent: "flex-end"
+  },
+  buttonText: {
+    color: "white",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  textStyle: {
+    fontSize: 16,
+    alignSelf: "center"
+  }
+});
 export default AddWorkout;

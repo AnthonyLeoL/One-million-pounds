@@ -15,7 +15,16 @@ const navigator = createStackNavigator(
     initialRouteName: "Home",
     defaultNavigationOptions: {
       headerLeft: null,
-      title: "OMP"
+      title: "OMP",
+      headerStyle: {
+        backgroundColor: "#3b3b3b"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+        marginRight: "auto",
+        marginLeft: "auto"
+      }
     }
   }
 );

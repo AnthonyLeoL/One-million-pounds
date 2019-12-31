@@ -12,7 +12,12 @@ import {
 const ExerciseCard = ({ exerciseInfo }) => {
   return (
     <View>
-      <Text>Name: {exerciseInfo.name}</Text>
+      {exerciseInfo.name ? (
+        <Text>{exerciseInfo.name} </Text>
+      ) : (
+        <Text>Name: ...</Text>
+      )}
+
       <Text>Total Lifted: {exerciseInfo.exerciseTotal}</Text>
     </View>
   );

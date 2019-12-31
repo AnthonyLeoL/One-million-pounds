@@ -113,9 +113,6 @@ class AddExercise extends Component {
               renderItem={({ item, index }) => {
                 return (
                   <View>
-                    <TouchableOpacity onPress={() => this.deleteSet(index)}>
-                      <Text>X</Text>
-                    </TouchableOpacity>
                     <Text>Set {index + 1} </Text>
                     <Set
                       reps={item.reps}
@@ -124,6 +121,9 @@ class AddExercise extends Component {
                         this.changeValue(item, val, type)
                       }
                     />
+                    <TouchableOpacity onPress={() => this.deleteSet(index)}>
+                      <Text>Delete</Text>
+                    </TouchableOpacity>
                     <Text>
                       Weight Lifted:{" "}
                       {isNaN(item.setTotal) ? "Err" : item.setTotal}

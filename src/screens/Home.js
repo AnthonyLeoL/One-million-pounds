@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from "react-native";
 import { Workout } from "../Models";
+const oneMillion = 1000000;
 
 class Home extends Component {
   constructor(props) {
@@ -18,10 +19,25 @@ class Home extends Component {
       totalLifted: 0
     };
   }
-  componentDidMount() {
-    //this.loadData();
-    AsyncStorage.clear();
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam("headerText", "One million pounds")
+    };
+  };
+
+  async componentDidMount() {
+    await this.loadData();
+    this.updateHeader();
+    //AsyncStorage.clear();
   }
+  updateHeader = () => {
+    this.props.navigation.setParams({
+      headerText:
+        this.numberWithCommas(this.state.totalLifted) + "/" + "1,000,000"
+    });
+  };
+
   updateHomeFromChild = (exercises, workoutTotal, index) => {
     let changed = this.state.workouts;
     let changedWeight = -changed[index].workoutTotal;
@@ -54,7 +70,7 @@ class Home extends Component {
 
   loadData = async () => {
     let returnedObj = await AsyncStorage.getItem("temp");
-    returnedObj = JSON.parse(returnedObj);
+    returnedObj = await JSON.parse(returnedObj);
     try {
       this.setState({
         workouts: returnedObj.workouts,
@@ -66,6 +82,7 @@ class Home extends Component {
   };
 
   saveData = () => {
+    this.updateHeader();
     const { workouts, totalLifted } = this.state;
     let objToSave = { workouts, totalLifted };
     AsyncStorage.setItem("temp", JSON.stringify(objToSave));
@@ -76,27 +93,53 @@ class Home extends Component {
     workouts.push(new Workout());
     this.setState({ workouts }, this.saveData());
   };
+
+  numberWithCommas = x => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  fixJSGarbageDateHandling = date => {
+    if (typeof date !== "string") return date;
+    if (/^\d{4}\-\d\d\-\d\dT\d\d\:\d\d\:\d\d/.test(date)) return new Date(date);
+
+    return val;
+  };
   render() {
     return (
       <ScrollView>
-        <Text>Total To Date: {this.state.totalLifted}</Text>
+        <Text style={styles.header}>
+          Left To Lift:{" "}
+          {this.numberWithCommas(
+            Math.max(0, oneMillion - this.state.totalLifted)
+          )}
+        </Text>
         {this.state.workouts.map((item, i) => (
-          <View key={i}>
-            <Text>Date {item.date.toLocaleDateString()}</Text>
-            <TouchableOpacity onPress={() => this.deleteWorkOut(i)}>
-              <Text>X</Text>
-            </TouchableOpacity>
-            <Text>{item.workoutTotal}</Text>
+          <View style={styles.cardStyle} key={i}>
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate("AddWorkout", {
                   updateHomeFromChild: this.updateHomeFromChild.bind(this),
+                  deleteWorkOut: this.deleteWorkOut.bind(this),
                   currentData: this.state.workouts[i],
                   index: i
                 })
               }
             >
-              <Text>Edit</Text>
+              <View>
+                {console.log(item)}
+                {item.workoutTotal ? (
+                  <Text style={styles.dateStyle}>
+                    {" "}
+                    Lifted {item.workoutTotal} lb on{" "}
+                    {this.fixJSGarbageDateHandling(
+                      item.date
+                    ).toLocaleDateString()}
+                  </Text>
+                ) : (
+                  <Text>Tap to start adding workouts!</Text>
+                )}
+              </View>
+
+              <Text></Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -113,5 +156,23 @@ class Home extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  header: {
+    alignSelf: "center",
+    fontSize: 18
+  },
+  cardStyle: {
+    borderWidth: 1,
+    borderColor: "black"
+  },
+  dateStyle: {
+    justifyContent: "flex-end"
+  },
+  viewStyle: {
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  }
+});
 
 export default Home;
