@@ -12,7 +12,7 @@ import styles from "../styles/Style";
 const Set = props => {
   return (
     <View style={styles.grey}>
-      <Text>Reps:</Text>
+      <Text style={{ marginLeft: "3%" }}>Reps:</Text>
       <TextInput
         style={styles.textInputStyle}
         autoCapitalize="words"
@@ -22,7 +22,7 @@ const Set = props => {
         onChangeText={val => props.onChange(val, "reps")}
         value={props.reps ? props.reps.toString() : ""}
       />
-      <Text>weight:</Text>
+      <Text style={{ marginLeft: "3%" }}>weight:</Text>
       <TextInput
         style={styles.textInputStyle}
         autoCapitalize="words"

@@ -109,9 +109,6 @@ class Home extends Component {
     return val;
   };
   handleNewButton = () => {
-    // this.setState({
-    //   workouts: [...this.state.workouts, new Workout()]
-    // });
     let workoutCopy = this.state.workouts;
     workoutCopy.unshift(new Workout());
     this.setState({ workouts: workoutCopy });

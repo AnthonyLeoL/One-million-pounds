@@ -137,9 +137,12 @@ class AddWorkout extends Component {
                     <ExerciseCard key={i.toString()} exerciseInfo={item} />
                   </View>
                 ) : (
-                  <Text style={styles.textStyle}>
-                    Click to start adding info
-                  </Text>
+                  <View>
+                    <Text style={styles.buttonText}> </Text>
+                    <Text style={styles.buttonText}>
+                      Click to start adding info
+                    </Text>
+                  </View>
                 )}
                 <TouchableOpacity
                   style={styles.deleteButton}

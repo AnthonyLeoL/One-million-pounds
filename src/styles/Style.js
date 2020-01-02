@@ -8,7 +8,7 @@ export default StyleSheet.create({
     minHeight: 70,
     marginHorizontal: "5%",
     marginVertical: 10,
-    backgroundColor: "#888"
+    backgroundColor: "#717171"
   },
   setStyle: {
     margin: 2,
@@ -28,11 +28,12 @@ export default StyleSheet.create({
   },
   viewStyle: {
     flexDirection: "column",
-    justifyContent: "flex-start"
+    justifyContent: "flex-end"
   },
   deleteButton: {
     color: "white",
     alignSelf: "flex-end",
+    justifyContent: "flex-end",
     backgroundColor: "#d43c2b",
     paddingHorizontal: "2%"
   },

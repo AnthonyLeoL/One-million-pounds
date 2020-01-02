@@ -99,7 +99,7 @@ class AddExercise extends Component {
           <Text style={styles.header}>
             Exercise Total: {this.state.exerciseTotal}
           </Text>
-          <Text>Name</Text>
+          <Text style={{ marginLeft: "3%" }}>Name</Text>
           <TextInput
             style={styles.textInputStyle}
             placeholder="Exercise Name"
@@ -126,15 +126,17 @@ class AddExercise extends Component {
                   weight={item.weight}
                   onChange={(val, type) => this.changeValue(item, val, type)}
                 />
+
+                <Text style={styles.textStyle}>
+                  Set Total: {isNaN(item.setTotal) ? "Err" : item.setTotal}
+                </Text>
+
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => this.deleteSet(index)}
                 >
                   <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
-                <Text>
-                  Weight Lifted: {isNaN(item.setTotal) ? "Err" : item.setTotal}
-                </Text>
               </View>
             ))}
           </ScrollView>
