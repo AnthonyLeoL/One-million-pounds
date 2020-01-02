@@ -4,8 +4,11 @@ A weight lifting fitness app to track your progress and to motivate you over tim
 
 <hr />
 <div>
+  
 ![image](https://https://user-images.githubusercontent.com/44878476/71697541-2e518100-2d6d-11ea-87d6-97bb3312959b.jpg)
+
 </div>
+
 ![image](https://user-images.githubusercontent.com/44878476/71697545-301b4480-2d6d-11ea-97bc-582f549f5029.jpg)
 
 ![image](https://user-images.githubusercontent.com/44878476/71697552-34476200-2d6d-11ea-82bc-405bf6b15d89.jpg)
