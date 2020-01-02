@@ -12,6 +12,7 @@ import {
 
 import ExerciseCard from "../components/ExerciseCard";
 import { Exercise } from "../Models";
+import styles from "../styles/Style";
 
 class AddWorkout extends Component {
   constructor(props) {
@@ -103,9 +104,16 @@ class AddWorkout extends Component {
     );
     this.props.navigation.goBack();
   };
+
+  handleNewButton = () => {
+    let exerciseCopy = this.state.exercises;
+    exerciseCopy.unshift(new Exercise());
+    this.setState({ exercises: exerciseCopy });
+  };
+
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={styles.grey}>
         <Text style={styles.header}>
           Weight Lifted this workout: {this.state.workoutTotal}
         </Text>
@@ -148,11 +156,7 @@ class AddWorkout extends Component {
 
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => {
-            this.setState({
-              exercises: [...this.state.exercises, new Exercise()]
-            });
-          }}
+          onPress={this.handleNewButton}
         >
           <Text style={styles.buttonText}>Add New Exercise</Text>
         </TouchableOpacity>
@@ -175,55 +179,5 @@ class AddWorkout extends Component {
     );
   }
 }
-const styles = StyleSheet.create({
-  cardStyle: {
-    borderWidth: 1,
-    borderColor: "black",
-    minHeight: 40
-  },
-  buttonStyle: {
-    borderColor: "green",
-    borderWidth: 1,
-    backgroundColor: "green",
-    paddingVertical: "1%"
-  },
 
-  viewStyle: {
-    flexDirection: "column",
-    justifyContent: "flex-start"
-  },
-  deleteButton: {
-    color: "white",
-    alignSelf: "flex-end",
-    backgroundColor: "#d43c2b",
-    paddingHorizontal: "2%"
-  },
-  deleteButtonContainer: {
-    backgroundColor: "#d43c2b",
-    paddingVertical: "3%",
-    marginTop: "5%"
-  },
-  header: {
-    fontSize: 20,
-    paddingVertical: "3%",
-    alignSelf: "center"
-  },
-  saveButton: {
-    backgroundColor: "#10B5F8",
-    paddingVertical: "2%",
-    marginVertical: "2%"
-  },
-  buttonText: {
-    fontSize: 15,
-    color: "white",
-    alignSelf: "center",
-    paddingVertical: "1%",
-    justifyContent: "center"
-  },
-  textStyle: {
-    fontSize: 16,
-    alignSelf: "center",
-    justifyContent: "center"
-  }
-});
 export default AddWorkout;

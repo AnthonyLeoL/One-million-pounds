@@ -8,17 +8,20 @@ import {
   TouchableOpacity,
   FlatList
 } from "react-native";
+import styles from "../styles/Style";
 
 const ExerciseCard = ({ exerciseInfo }) => {
   return (
     <View>
       {exerciseInfo.name ? (
-        <Text>{exerciseInfo.name} </Text>
+        <Text style={styles.buttonText}>{exerciseInfo.name} </Text>
       ) : (
-        <Text>Name: ...</Text>
+        <Text style={styles.buttonText}>...</Text>
       )}
 
-      <Text>Total Lifted: {exerciseInfo.exerciseTotal}</Text>
+      <Text style={styles.buttonText}>
+        Total Lifted: {exerciseInfo.exerciseTotal} lb
+      </Text>
     </View>
   );
 };

@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from "react-native";
 import { Workout } from "../Models";
+import styles from "../styles/Style";
 const oneMillion = 1000000;
 
 class Home extends Component {
@@ -28,13 +29,15 @@ class Home extends Component {
 
   async componentDidMount() {
     await this.loadData();
-    this.updateHeader();
+    this.updateHeader(
+      this.numberWithCommas(this.state.totalLifted) + "/" + "1,000,000"
+    );
     //AsyncStorage.clear();
   }
-  updateHeader = () => {
+
+  updateHeader = newHeader => {
     this.props.navigation.setParams({
-      headerText:
-        this.numberWithCommas(this.state.totalLifted) + "/" + "1,000,000"
+      headerText: newHeader
     });
   };
 
@@ -82,7 +85,9 @@ class Home extends Component {
   };
 
   saveData = () => {
-    this.updateHeader();
+    this.updateHeader(
+      this.numberWithCommas(this.state.totalLifted) + "/" + "1,000,000"
+    );
     const { workouts, totalLifted } = this.state;
     let objToSave = { workouts, totalLifted };
     AsyncStorage.setItem("temp", JSON.stringify(objToSave));
@@ -103,18 +108,28 @@ class Home extends Component {
 
     return val;
   };
+  handleNewButton = () => {
+    // this.setState({
+    //   workouts: [...this.state.workouts, new Workout()]
+    // });
+    let workoutCopy = this.state.workouts;
+    workoutCopy.unshift(new Workout());
+    this.setState({ workouts: workoutCopy });
+  };
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={styles.grey}>
         <Text style={styles.header}>
           Left To Lift:{" "}
           {this.numberWithCommas(
             Math.max(0, oneMillion - this.state.totalLifted)
           )}
         </Text>
+
         {this.state.workouts.map((item, i) => (
-          <View style={styles.cardStyle} key={i}>
+          <View key={i}>
             <TouchableOpacity
+              style={styles.cardStyle}
               onPress={() =>
                 this.props.navigation.navigate("AddWorkout", {
                   updateHomeFromChild: this.updateHomeFromChild.bind(this),
@@ -124,10 +139,9 @@ class Home extends Component {
                 })
               }
             >
-              <View>
-                {console.log(item)}
+              <View style={styles.textStyle}>
                 {item.workoutTotal ? (
-                  <Text style={styles.dateStyle}>
+                  <Text style={styles.buttonText}>
                     {" "}
                     Lifted {item.workoutTotal} lb on{" "}
                     {this.fixJSGarbageDateHandling(
@@ -135,7 +149,9 @@ class Home extends Component {
                     ).toLocaleDateString()}
                   </Text>
                 ) : (
-                  <Text>Tap to start adding workouts!</Text>
+                  <Text style={styles.buttonText}>
+                    Tap to start adding workouts!
+                  </Text>
                 )}
               </View>
 
@@ -144,35 +160,14 @@ class Home extends Component {
           </View>
         ))}
         <TouchableOpacity
-          onPress={() => {
-            this.setState({
-              workouts: [...this.state.workouts, new Workout()]
-            });
-          }}
+          style={styles.buttonStyle}
+          onPress={this.handleNewButton}
         >
-          <Text>New</Text>
+          <Text style={styles.buttonText}>New</Text>
         </TouchableOpacity>
       </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  header: {
-    alignSelf: "center",
-    fontSize: 18
-  },
-  cardStyle: {
-    borderWidth: 1,
-    borderColor: "black"
-  },
-  dateStyle: {
-    justifyContent: "flex-end"
-  },
-  viewStyle: {
-    flexDirection: "row",
-    justifyContent: "flex-start"
-  }
-});
 
 export default Home;
