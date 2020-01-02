@@ -117,6 +117,15 @@ class AddWorkout extends Component {
         <Text style={styles.header}>
           Weight Lifted this workout: {this.state.workoutTotal}
         </Text>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={this.handleNewButton}
+        >
+          <Text style={styles.buttonText}>Add New Exercise</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={this.onSave}>
+          <Text style={styles.buttonText}>Save and go back</Text>
+        </TouchableOpacity>
         {this.state.exercises.map((item, i) => (
           <View style={styles.cardStyle} key={i.toString()}>
             <View>
@@ -156,16 +165,6 @@ class AddWorkout extends Component {
             </View>
           </View>
         ))}
-
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={this.handleNewButton}
-        >
-          <Text style={styles.buttonText}>Add New Exercise</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.saveButton} onPress={this.onSave}>
-          <Text style={styles.buttonText}>Save and go back</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.deleteButtonContainer}
           onPress={() => {

@@ -122,7 +122,12 @@ class Home extends Component {
             Math.max(0, oneMillion - this.state.totalLifted)
           )}
         </Text>
-
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={this.handleNewButton}
+        >
+          <Text style={styles.buttonText}>New</Text>
+        </TouchableOpacity>
         {this.state.workouts.map((item, i) => (
           <View key={i}>
             <TouchableOpacity
@@ -156,12 +161,6 @@ class Home extends Component {
             </TouchableOpacity>
           </View>
         ))}
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={this.handleNewButton}
-        >
-          <Text style={styles.buttonText}>New</Text>
-        </TouchableOpacity>
       </ScrollView>
     );
   }
