@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  grey: { backgroundColor: "#a2a2a2", flex: 1 },
+  background: { backgroundColor: "#c9c9c9", flex: 1 },
   cardStyle: {
     borderWidth: 1,
     borderColor: "black",
     minHeight: 70,
     marginHorizontal: "5%",
     marginVertical: 10,
-    backgroundColor: "#717171"
+    backgroundColor: "#159fa6"
   },
   setStyle: {
     margin: 2,
@@ -70,7 +70,7 @@ export default StyleSheet.create({
     textAlign: "center"
   },
   saveButton: {
-    backgroundColor: "#10B5F8",
+    backgroundColor: "#0099ff",
     paddingVertical: "2%",
     marginVertical: "2%"
   },

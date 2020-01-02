@@ -113,7 +113,7 @@ class AddWorkout extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.grey}>
+      <ScrollView style={styles.background}>
         <Text style={styles.header}>
           Weight Lifted this workout: {this.state.workoutTotal}
         </Text>

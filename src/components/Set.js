@@ -11,7 +11,7 @@ import styles from "../styles/Style";
 
 const Set = props => {
   return (
-    <View style={styles.grey}>
+    <View style={styles.background}>
       <Text style={{ marginLeft: "3%" }}>Reps:</Text>
       <TextInput
         style={styles.textInputStyle}

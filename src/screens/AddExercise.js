@@ -94,7 +94,7 @@ class AddExercise extends Component {
 
   render() {
     return (
-      <View style={styles.grey}>
+      <View style={styles.background}>
         <View>
           <Text style={styles.header}>
             Exercise Total: {this.state.exerciseTotal}

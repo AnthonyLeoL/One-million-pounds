@@ -106,28 +106,41 @@ class Home extends Component {
     if (typeof date !== "string") return date;
     if (/^\d{4}\-\d\d\-\d\dT\d\d\:\d\d\:\d\d/.test(date)) return new Date(date);
 
-    return val;
+    return new Date();
   };
   handleNewButton = () => {
     let workoutCopy = this.state.workouts;
     workoutCopy.unshift(new Workout());
     this.setState({ workouts: workoutCopy });
   };
+  getDaysSinceStart = () => {
+    return Math.ceil(
+      (new Date().getTime() -
+        this.fixJSGarbageDateHandling(
+          this.state.workouts[this.state.workouts.length - 1].date
+        ).getTime()) /
+        (1000 * 3600 * 24)
+    );
+  };
   render() {
     return (
-      <ScrollView style={styles.grey}>
+      <ScrollView style={styles.background}>
         <Text style={styles.header}>
           Left To Lift:{" "}
           {this.numberWithCommas(
             Math.max(0, oneMillion - this.state.totalLifted)
           )}
         </Text>
+
         <TouchableOpacity
           style={styles.buttonStyle}
           onPress={this.handleNewButton}
         >
           <Text style={styles.buttonText}>New</Text>
         </TouchableOpacity>
+        <Text style={styles.textStyle}>
+          Lifting for {this.getDaysSinceStart()} days
+        </Text>
         {this.state.workouts.map((item, i) => (
           <View key={i}>
             <TouchableOpacity
@@ -151,13 +164,13 @@ class Home extends Component {
                     ).toLocaleDateString()}
                   </Text>
                 ) : (
-                  <Text style={styles.buttonText}>
-                    Tap to start adding workouts!
-                  </Text>
+                  <View>
+                    <Text style={styles.buttonText}>
+                      Tap to start adding workouts!
+                    </Text>
+                  </View>
                 )}
               </View>
-
-              <Text></Text>
             </TouchableOpacity>
           </View>
         ))}
