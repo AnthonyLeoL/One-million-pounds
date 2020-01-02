@@ -4,7 +4,6 @@ A weight lifting fitness app to track your progress and to motivate you over tim
 
 <hr />
 <div>
-
  <img src="https://user-images.githubusercontent.com/44878476/71697541-2e518100-2d6d-11ea-87d6-97bb3312959b.jpg" alt="screenshot of app 1" width=200" height="400">
  <p>Screen shot of editing set</p>
 
@@ -14,6 +13,4 @@ A weight lifting fitness app to track your progress and to motivate you over tim
 
 <img src="https://user-images.githubusercontent.com/44878476/71697552-34476200-2d6d-11ea-82bc-405bf6b15d89.jpg" alt="screenshot of app 3" width=200" height="400">
  <p>Screen shot of summary of workouts with totals</p>
-
-
 </div>
